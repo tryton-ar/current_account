@@ -1,0 +1,84 @@
+# -*- encoding: utf-8 -*-
+#
+# this file is part of the current_account package for tryton.
+# the COPYRIGHT file at the top level of this repository
+# contains the full copyright notice and license terms.
+
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:account.configuration,analytic_account_invoice:"
+msgid "Analytic Accounts for Invoices"
+msgstr "Cuentas analíticas en facturas"
+
+msgctxt "field:account.move.line,balance:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "field:analytic_account.account,configuration:"
+msgid "Configuration"
+msgstr "Configuración"
+
+msgctxt "model:ir.action,name:act_move_line_balance"
+msgid "Payable/Receivable Lines Balance"
+msgstr "Cuenta Corriente"
+
+msgctxt "model:ir.action,name:report_move_line_list"
+msgid "Move Line List"
+msgstr "Move Line List"
+
+msgctxt "model:ir.action,name:wiz_move_line_balance"
+msgid "Payable/Receivable Lines Balance"
+msgstr "Cuenta Corriente"
+
+msgctxt "model:res.group,name:group_invoice"
+msgid "Invoice"
+msgstr "Facturas"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "/"
+msgstr "/"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Move"
+msgstr "Movimiento"
+
+msgctxt "report:account.move.line.move_line_list:"
+msgid "Move Lines"
+msgstr "Cuenta Corriente"
+
+msgctxt "view:account.move.line:"
+msgid "Account Move Lines"
+msgstr "Líneas de asientos contables"
+
+msgctxt "view:account.move.line:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "view:account.move.line:"
+msgid "Debit"
+msgstr "Debe"
