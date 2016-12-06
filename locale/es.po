@@ -25,7 +25,7 @@ msgstr "Cuenta Corriente"
 
 msgctxt "model:ir.action,name:report_move_line_list"
 msgid "Move Line List"
-msgstr "Move Line List"
+msgstr "Cuenta Corriente"
 
 msgctxt "model:ir.action,name:wiz_move_line_balance"
 msgid "Payable/Receivable Lines Balance"

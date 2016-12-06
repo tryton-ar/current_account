@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tree string="Account Move Lines">
+<tree>
     <field name="origin"/>
     <field name="description"/>
     <field name="move_description"/>
