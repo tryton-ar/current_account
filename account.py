@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+# This file is part of the current_account module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 from decimal import Decimal
 from trytond.tools import reduce_ids
-from trytond.model import ModelView, ModelSQL, fields
-from trytond.pyson import Eval, PYSONEncoder
+from trytond.model import fields
+from trytond.pyson import PYSONEncoder
 from trytond.wizard import Wizard, StateAction
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
