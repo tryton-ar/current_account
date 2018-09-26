@@ -10,6 +10,7 @@ from trytond.wizard import Wizard, StateAction
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.company import CompanyReport
+from trytond.modules.product import price_digits
 
 __all__ = ['Line', 'OpenMoveLineBalance', 'MoveLineList']
 
@@ -18,7 +19,8 @@ class Line:
     __metaclass__ = PoolMeta
     __name__ = 'account.move.line'
 
-    balance = fields.Function(fields.Numeric('Balance'), 'get_balance')
+    balance = fields.Function(fields.Numeric('Balance', digits=price_digits),
+        'get_balance')
 
     @classmethod
     def get_balance(cls, lines, name):
