@@ -42,7 +42,7 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">Move Line List</field>
             <field name="model">account.move.line</field>
             <field name="report_name">account.move.line.move_line_list</field>
-            <field name="report">current_account/move_line_list.odt</field>
+            <field name="report">current_account/move_line_list.fodt</field>
         </record>
         <record model="ir.action.keyword" id="report_move_line_list_keyword">
             <field name="keyword">form_print</field>
