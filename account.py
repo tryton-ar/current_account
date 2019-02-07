@@ -15,8 +15,7 @@ from trytond.modules.product import price_digits
 __all__ = ['Line', 'OpenMoveLineBalance', 'MoveLineList']
 
 
-class Line:
-    __metaclass__ = PoolMeta
+class Line(metaclass=PoolMeta):
     __name__ = 'account.move.line'
 
     balance = fields.Function(fields.Numeric('Balance', digits=price_digits),
