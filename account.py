@@ -82,9 +82,9 @@ class Line:
         if account_kind:
             from_account_kind = ', account_account a'
             where_account_kind = ('aml.account = a.id '
-                'AND a.kind IN (\''
-                + '\', \''.join(str(k) for k in account_kind)
-                + '\') AND ')
+                'AND a.kind IN (\'' +
+                '\', \''.join(str(k) for k in account_kind) +
+                '\') AND ')
 
         cursor = Transaction().connection.cursor()
         for line in lines:
@@ -99,9 +99,9 @@ class Line:
                 FROM
                     account_move am""" + from_fiscalyear + """,
                     account_move_line aml""" + from_account_kind + """
-                WHERE """ + where_fiscalyear + where_journal
-                    + where_period + where_account + where_party
-                    + where_account_kind + """
+                WHERE """ + where_fiscalyear + where_journal +
+                    where_period + where_account + where_party +
+                    where_account_kind + """
                     aml.move = am.id
                     AND (
                         am.date < '%s'

@@ -1,15 +1,17 @@
-# __init__.py
+# This file is part of the current_account module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 from trytond.pool import Pool
+from . import account
 
-from .account import *
 
 def register():
     Pool.register(
-        Line,
+        account.Line,
         module='current_account', type_='model')
     Pool.register(
-        OpenMoveLineBalance,
+        account.OpenMoveLineBalance,
         module='current_account', type_='wizard')
     Pool.register(
-        MoveLineList,
+        account.MoveLineList,
         module='current_account', type_='report')
