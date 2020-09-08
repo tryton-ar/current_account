@@ -5,18 +5,18 @@
 from decimal import Decimal
 from trytond.tools import reduce_ids
 from trytond.model import fields
-from trytond.pyson import PYSONEncoder
 from trytond.wizard import Wizard, StateAction
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
+from trytond.pyson import PYSONEncoder, Eval
 from trytond.modules.company import CompanyReport
-from trytond.modules.product import price_digits
 
 
 class Line(metaclass=PoolMeta):
     __name__ = 'account.move.line'
 
-    balance = fields.Function(fields.Numeric('Balance', digits=price_digits),
+    balance = fields.Function(fields.Numeric('Balance',
+        digits=(16, Eval('currency_digits', 2)), depends=['currency_digits']),
         'get_balance')
 
     @classmethod
