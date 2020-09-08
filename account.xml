@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
-this repository contains the full copyright notices and license terms. -->
 <tryton>
     <data>
+
+<!-- Move Line Balance -->
 
         <record model="ir.ui.view" id="move_line_balance_view_tree">
             <field name="model">account.move.line</field>
@@ -14,13 +14,15 @@ this repository contains the full copyright notices and license terms. -->
             <field name="name">Payable/Receivable Lines Balance</field>
             <field name="wiz_name">account.move.line.balance</field>
         </record>
+
         <record model="ir.action.keyword" id="act_move_line_balance_keyword1">
             <field name="keyword">form_relate</field>
             <field name="model">party.party,-1</field>
             <field name="action" ref="wiz_move_line_balance"/>
         </record>
-        
-        <!-- All account move lines payable or receivable, with balance view -->
+
+<!-- All account move lines payable or receivable, with balance view -->
+
         <record model="ir.action.act_window" id="act_move_line_balance">
             <field name="name">Payable/Receivable Lines Balance</field>
             <field name="res_model">account.move.line</field>
@@ -31,19 +33,22 @@ this repository contains the full copyright notices and license terms. -->
             <field name="view" ref="move_line_balance_view_tree"/>
             <field name="act_window" ref="act_move_line_balance"/>
         </record>
+
         <record model="ir.action-res.group"
             id="act_move_line_payable_receivable-group_account">
             <field name="action" ref="act_move_line_balance"/>
             <field name="group" ref="account.group_account"/>
         </record>
 
-        <!-- Move Line Report -->
+<!-- Move Line Report -->
+
         <record model="ir.action.report" id="report_move_line_list">
             <field name="name">Move Line List</field>
             <field name="model">account.move.line</field>
             <field name="report_name">account.move.line.move_line_list</field>
             <field name="report">current_account/move_line_list.fodt</field>
         </record>
+
         <record model="ir.action.keyword" id="report_move_line_list_keyword">
             <field name="keyword">form_print</field>
             <field name="model">account.move.line,-1</field>
