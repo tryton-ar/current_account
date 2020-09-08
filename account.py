@@ -3,12 +3,13 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from decimal import Decimal
-from trytond.tools import reduce_ids
+
 from trytond.model import fields
 from trytond.wizard import Wizard, StateAction
-from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import PYSONEncoder, Eval
+from trytond.transaction import Transaction
+from trytond.tools import reduce_ids
 from trytond.modules.company import CompanyReport
 
 
@@ -91,23 +92,24 @@ class Line(metaclass=PoolMeta):
             number = line.move.number
             debit = line.debit or Decimal('0.0')
             credit = line.credit or Decimal('0.0')
+
             cursor.execute("""
                 SELECT
                     SUM(debit-credit)
                 FROM
                     account_move am""" + from_fiscalyear + """,
                     account_move_line aml""" + from_account_kind + """
-                WHERE """ + where_fiscalyear + where_journal +
-                    where_period + where_account + where_party +
-                    where_account_kind + """
+                WHERE """ + where_fiscalyear + where_journal
+                    + where_period + where_account + where_party
+                    + where_account_kind + """
                     aml.move = am.id
                     AND (
-                        am.date < '%s'
-                        OR (am.date = '%s' AND am.number < '%s')
-                        OR (am.date = '%s' AND am.number = '%s'
-                            AND aml.id < '%s')
+                        am.date < %s
+                        OR (am.date = %s AND am.number < %s)
+                        OR (am.date = %s AND am.number = %s
+                            AND aml.id < %s)
                     )
-                """ % (date, date, number, date, number, id))
+                """, (date, date, number, date, number, id))
             balance = cursor.fetchone()[0] or Decimal('0.0')
             if not isinstance(balance, Decimal):
                 balance = Decimal(balance)
