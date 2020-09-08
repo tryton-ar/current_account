@@ -119,8 +119,7 @@ class Line(metaclass=PoolMeta):
     @classmethod
     def search(cls, args, offset=0, limit=None, order=None, count=False,
             query=False):
-        lines = super(Line, cls).search(args, offset, limit, order,
-            count, query)
+        lines = super().search(args, offset, limit, order, count, query)
 
         Move = Pool().get('account.move')
         cursor = Transaction().connection.cursor()
