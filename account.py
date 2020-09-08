@@ -79,11 +79,10 @@ class Line(metaclass=PoolMeta):
         if Transaction().context.get('account_kind'):
             account_kind = list(Transaction().context.get('account_kind'))
         if account_kind:
-            from_account_kind = ', account_account a'
+            from_account_kind = ', account_account a, account_account_type at'
             where_account_kind = ('aml.account = a.id '
-                'AND a.kind IN (\'' +
-                '\', \''.join(str(k) for k in account_kind) +
-                '\') AND ')
+                'AND a.type = at.id '
+                'AND (at.payable IS TRUE OR at.receivable IS TRUE) AND ')
 
         cursor = Transaction().connection.cursor()
         for line in lines:
