@@ -15,6 +15,7 @@ from trytond.modules.company import CompanyReport
 class Line(metaclass=PoolMeta):
     __name__ = 'account.move.line'
 
+    origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
     balance = fields.Function(fields.Numeric('Balance',
         digits=(16, Eval('currency_digits', 2)), depends=['currency_digits']),
         'get_balance')
@@ -141,10 +142,32 @@ class Line(metaclass=PoolMeta):
             lines = cls.browse(ids)
         return lines
 
+    @classmethod
+    def get_origin_text(cls, lines, name):
+        result = {}
+        for line in lines:
+            reference = ''
+            origin = str(line.move_origin)
+            model = origin[:origin.find(',')]
+            if model == 'account.invoice':
+                invoice = line.move_origin
+                reference = 'Factura '
+                if invoice.type == 'in':
+                    reference += invoice.reference or ''
+                else:
+                    reference += invoice.number or ''
+            elif model == 'account.voucher':
+                reference = 'Comprobante %s' % str(line.move_origin.number)
+            elif model == 'account.move':
+                reference = 'Asiento %s' % str(line.move_origin.number)
+            result[line.id] = reference
+        return result
+
 
 class OpenMoveLineBalance(Wizard):
     'Open Type'
     __name__ = 'account.move.line.balance'
+
     start_state = 'open_'
     open_ = StateAction('current_account.act_move_line_balance')
 
@@ -152,32 +175,21 @@ class OpenMoveLineBalance(Wizard):
         Party = Pool().get('party.party')
 
         party = Party(Transaction().context['active_id'])
+
         action['pyson_domain'] = PYSONEncoder().encode([
                 ('party', '=', Transaction().context['active_id']),
-                ('account.kind', 'in', ['payable', 'receivable'])
+                ['OR',
+                    ('account.type.payable', '=', True),
+                    ('account.type.receivable', '=', True)],
                 ])
         action['pyson_context'] = PYSONEncoder().encode({
                 'party': Transaction().context['active_id'],
                 'account_kind': ['payable', 'receivable'],
                 })
-        action['name'] = 'Cuenta Corriente - %s' % (party.name)
+        action['name'] = 'Cuenta corriente - %s' % (party.name)
         return action, {}
 
 
 class MoveLineList(CompanyReport):
     'Move Line List'
     __name__ = 'account.move.line.move_line_list'
-
-    @classmethod
-    def get_context(cls, records, data):
-        Invoice = Pool().get('account.invoice')
-        report_context = super(MoveLineList, cls).get_context(records, data)
-
-        for line in records:
-            reference = ''
-            model = str(line.origin)
-            if model[:model.find(',')] == 'account.invoice':
-                reference = Invoice(line.origin.id).reference
-            line.reference = reference
-
-        return report_context
