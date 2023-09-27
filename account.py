@@ -3,14 +3,407 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from decimal import Decimal
+from sql import Column, Literal, Null
+from sql.aggregate import Sum, Window
+from sql.conditionals import Coalesce
 
-from trytond.model import fields
+from trytond.model import fields, ModelSQL, ModelView
 from trytond.wizard import Wizard, StateAction
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import PYSONEncoder, Eval
+from trytond.pyson import PYSONEncoder, Eval, If
 from trytond.transaction import Transaction
-from trytond.tools import reduce_ids
+from trytond.tools import reduce_ids, grouped_slice
 from trytond.modules.company import CompanyReport
+
+
+class PartyBalanceAccount(ModelSQL, ModelView):
+    'Party Balance Account'
+    __name__ = 'party.balance.account'
+
+    name = fields.Char('Name')
+    code = fields.Char('Code')
+    tax_identifier = fields.Function(fields.Many2One(
+        'party.identifier', 'Tax Identifier'),
+        'get_tax_identifier', searcher='search_tax_identifier')
+    currency_digits = fields.Function(fields.Integer('Currency Digits'),
+        'get_currency_digits')
+    balance = fields.Function(fields.Numeric('Balance',
+        digits=(16, Eval('currency_digits', 2))),
+        'get_balance', searcher='search_balance')
+    lines = fields.One2Many('party.balance.line', 'account', 'Lines',
+        readonly=True)
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls._order.insert(0, ('name', 'ASC'))
+
+    @classmethod
+    def table_query(cls):
+        pool = Pool()
+        Party = pool.get('party.party')
+        Category = pool.get('party.category')
+
+        party = Party.__table__()
+        category_parties = Literal(True)
+        category = Transaction().context.get('category')
+        if category:
+            categories = Category.search([
+                ('parent', 'child_of', [category]),
+                ])
+            parties = Party.search([
+                ('categories', 'in', [c.id for c in categories])
+                ])
+            if parties:
+                category_parties = party.id.in_([p.id for p in parties])
+            else:
+                category_parties = Literal(False)
+
+        columns = []
+        for fname, field in cls._fields.items():
+            if not hasattr(field, 'set'):
+                columns.append(Column(party, fname).as_(fname))
+        return party.select(*columns,
+            where=(party.active == Literal(True)
+                   & category_parties))
+
+    @classmethod
+    def get_tax_identifier(cls, parties, names):
+        pool = Pool()
+        Party = pool.get('party.party')
+
+        result = {'tax_identifier': dict((p.id, None) for p in parties)}
+        types = Party.tax_identifier_types()
+        # Add Argentine DNI if not included
+        if 'ar_dni' not in types:
+            types.append('ar_dni')
+        for p in parties:
+            party, = Party.browse([p.id])
+            for identifier in party.identifiers:
+                result['tax_identifier'][p.id] = identifier.id \
+                    if identifier.type in types else None
+        return result
+
+    @classmethod
+    def search_tax_identifier(cls, name, clause):
+        pool = Pool()
+        Party = pool.get('party.party')
+
+        _, operator, value = clause
+        types = Party.tax_identifier_types()
+        if 'ar_dni' not in types:
+            types.append('ar_dni')
+        domain = [
+            ('identifiers', 'where', [
+                    ('code', operator, value),
+                    ('type', 'in', types),
+                    ]),
+            ]
+        # Add party without tax identifier
+        if ((operator == '=' and value is None)
+                or (operator == 'in' and None in value)):
+            domain = ['OR',
+                domain, [
+                    ('identifiers', 'not where', [
+                            ('type', 'in', types),
+                            ]),
+                    ],
+                ]
+        ids = [p.id for p in Party.search(domain)]
+        return [('id', 'in', ids)]
+
+    @classmethod
+    def get_currency_digits(cls, parties, name):
+        pool = Pool()
+        Company = pool.get('company.company')
+        company_id = Transaction().context.get('company')
+        if company_id:
+            company = Company(company_id)
+            digits = company.currency.digits
+        else:
+            digits = 2
+        return {p.id: digits for p in parties}
+
+    @classmethod
+    def get_balance(cls, parties, names):
+        '''
+        Function to compute balance for party ids.
+        '''
+        result = {}
+        pool = Pool()
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Account = pool.get('account.account')
+        AccountType = pool.get('account.account.type')
+        User = pool.get('res.user')
+        cursor = Transaction().connection.cursor()
+
+        move = Move.__table__()
+        line = MoveLine.__table__()
+        account = Account.__table__()
+        account_type = AccountType.__table__()
+
+        result['balance'] = dict((p.id, Decimal('0.0')) for p in parties)
+
+        user = User(Transaction().user)
+        if not user.company:
+            return result
+        company_id = user.company.id
+        exp = Decimal(str(10.0 ** -user.company.currency.digits))
+
+        amount = Sum(Coalesce(line.debit, 0) - Coalesce(line.credit, 0))
+        from_date_where = to_date_where = Literal(True)
+        if Transaction().context.get('from_date'):
+            from_date_where = (move.date >=
+                    Transaction().context.get('from_date'))
+        if Transaction().context.get('to_date'):
+            to_date_where = (move.date <=
+                    Transaction().context.get('to_date'))
+        for sub_parties in grouped_slice(parties):
+            sub_ids = [p.id for p in sub_parties]
+            party_where = reduce_ids(line.party, sub_ids)
+            cursor.execute(*line.join(move,
+                    condition=move.id == line.move
+                    ).join(account,
+                    condition=account.id == line.account
+                    ).join(account_type,
+                    condition=account.type == account_type.id
+                    ).select(line.party, amount,
+                    where=(
+                        (getattr(account_type, 'payable')
+                         | getattr(account_type, 'receivable'))
+                        & (account.company == company_id)
+                        & party_where
+                        & from_date_where
+                        & to_date_where),
+                    group_by=line.party))
+            for party, value in cursor.fetchall():
+                # SQLite uses float for SUM
+                if not isinstance(value, Decimal):
+                    value = Decimal(str(value))
+                result['balance'][party] = value.quantize(exp)
+        return result
+
+    @classmethod
+    def search_balance(cls, name, clause):
+        pool = Pool()
+        Move = pool.get('account.move')
+        MoveLine = pool.get('account.move.line')
+        Account = pool.get('account.account')
+        AccountType = pool.get('account.account.type')
+        User = pool.get('res.user')
+
+        move = Move.__table__()
+        line = MoveLine.__table__()
+        account = Account.__table__()
+        account_type = AccountType.__table__()
+
+        _, operator, value = clause
+
+        user = User(Transaction().user)
+        if not user.company:
+            return []
+        company_id = user.company.id
+
+        from_date_where = to_date_where = Literal(True)
+        if Transaction().context.get('from_date'):
+            from_date_where = (move.date >=
+                    Transaction().context.get('from_date'))
+        if Transaction().context.get('to_date'):
+            to_date_where = (move.date <=
+                    Transaction().context.get('to_date'))
+
+        Operator = fields.SQL_OPERATORS[operator]
+
+        # Need to cast numeric for sqlite
+        cast_ = MoveLine.debit.sql_cast
+        amount = cast_(Sum(Coalesce(line.debit, 0) - Coalesce(line.credit, 0)))
+        if operator in {'in', 'not in'}:
+            value = [cast_(Literal(Decimal(v or 0))) for v in value]
+        else:
+            value = cast_(Literal(Decimal(value or 0)))
+        query = (line.join(move, condition=move.id == line.move
+                ).join(account, condition=account.id == line.account
+                ).join(account_type, condition=account.type == account_type.id
+                ).select(line.party,
+                where=(
+                    (getattr(account_type, 'payable')
+                    | getattr(account_type, 'receivable'))
+                    & (line.party != Null)
+                    & (account.company == company_id)
+                    & from_date_where
+                    & to_date_where),
+                group_by=line.party,
+                having=Operator(amount, value)))
+        return [('id', 'in', query)]
+
+
+class PartyBalanceAccountContext(ModelView):
+    'Party Balance Account Context'
+    __name__ = 'party.balance.account.context'
+
+    company = fields.Many2One('company.company', 'Company', required=True)
+    category = fields.Many2One('party.category', 'Category')
+    from_date = fields.Date("From Date",
+        domain=[
+            If(Eval('to_date') & Eval('from_date'),
+                ('from_date', '<=', Eval('to_date')),
+                ()),
+            ])
+    to_date = fields.Date("To Date",
+        domain=[
+            If(Eval('from_date') & Eval('to_date'),
+                ('to_date', '>=', Eval('from_date')),
+                ()),
+            ])
+
+    @classmethod
+    def default_company(cls):
+        return Transaction().context.get('company')
+
+    @classmethod
+    def default_from_date(cls):
+        return Transaction().context.get('from_date')
+
+    @classmethod
+    def default_to_date(cls):
+        return Transaction().context.get('to_date')
+
+
+class PartyBalanceLine(ModelSQL, ModelView):
+    'Party Balance Line'
+    __name__ = 'party.balance.line'
+
+    move = fields.Many2One('account.move', 'Move')
+    date = fields.Date('Date')
+    maturity_date = fields.Date('Maturity Date')
+    origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
+    move_origin = fields.Function(
+        fields.Reference("Move Origin", selection='get_move_origin'),
+        'get_move_field', searcher='search_move_field')
+    party = fields.Many2One('party.party', 'Party',
+        states={'invisible': ~Eval('party_required', False)})
+    company = fields.Many2One('company.company', 'Company')
+    debit = fields.Numeric('Debit',
+        digits=(16, Eval('currency_digits', 2)))
+    credit = fields.Numeric('Credit',
+        digits=(16, Eval('currency_digits', 2)))
+    balance = fields.Numeric('Balance',
+        digits=(16, Eval('currency_digits', 2)))
+    move_description = fields.Char('Move Description')
+    currency_digits = fields.Function(fields.Integer('Currency Digits'),
+        'get_currency_digits')
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls._order.insert(0, ('date', 'ASC'))
+
+    @classmethod
+    def table_query(cls):
+        pool = Pool()
+        Line = pool.get('account.move.line')
+        Move = pool.get('account.move')
+        Account = pool.get('account.account')
+        AccountType = pool.get('account.account.type')
+
+        transaction = Transaction()
+        context = Transaction().context
+        database = transaction.database
+        line = Line.__table__()
+        move = Move.__table__()
+        account = Account.__table__()
+        account_type = AccountType.__table__()
+        columns = []
+        for fname, field in cls._fields.items():
+            if hasattr(field, 'set'):
+                continue
+            field_line = getattr(Line, fname, None)
+            if fname == 'balance':
+                if database.has_window_functions():
+                    w_columns = [line.party]
+                    column = Sum(line.debit - line.credit,
+                        window=Window(w_columns,
+                            order_by=[move.date.asc, line.id])).as_('balance')
+                else:
+                    column = (line.debit - line.credit).as_('balance')
+            elif fname == 'move_description':
+                column = Column(move, 'description').as_(fname)
+            elif (not field_line
+                    or fname == 'state'
+                    or isinstance(field_line, fields.Function)):
+                column = Column(move, fname).as_(fname)
+            else:
+                column = Column(line, fname).as_(fname)
+            columns.append(column)
+
+        company_id = context.get('company')
+        party_id = context.get('party')
+        where_from_date = where_to_date = Literal(True)
+        if context.get('from_date'):
+            where_from_date = (move.date >= context.get('from_date'))
+        if context.get('to_date'):
+            where_to_date = (move.date <= context.get('to_date'))
+
+        with Transaction().set_context():
+            line_query, fiscalyear_ids = Line.query_get(line)
+        return line.join(move, condition=line.move == move.id
+            ).join(account, condition=line.account == account.id
+            ).join(account_type, condition=account.type == account_type.id
+            ).select(*columns, where=(
+                line_query
+                & (move.company == company_id)
+                & (line.party == party_id)
+                & where_from_date & where_to_date
+                & (getattr(account_type, 'payable')
+                | getattr(account_type, 'receivable'))))
+
+    def get_currency_digits(self, name):
+        return self.company.currency.digits
+
+    @classmethod
+    def get_origin_text(cls, lines, name):
+        result = {}
+        for line in lines:
+            reference = ''
+            origin = str(line.move_origin)
+            model = origin[:origin.find(',')]
+            if model == 'account.invoice':
+                invoice = line.move_origin
+                reference = 'Factura '
+                if invoice.type == 'in':
+                    reference += invoice.reference or ''
+                else:
+                    reference += invoice.number or ''
+            elif model == 'account.voucher':
+                reference = 'Comprobante %s' % str(line.move_origin.number)
+            elif model == 'account.move':
+                reference = 'Asiento %s' % str(line.move_origin.number)
+            result[line.id] = reference
+        return result
+
+    @classmethod
+    def get_move_origin(cls):
+        Move = Pool().get('account.move')
+        return Move.get_origin()
+
+    def get_move_field(self, name):
+        field = getattr(self.__class__, name)
+        if name.startswith('move_'):
+            name = name[5:]
+        value = getattr(self.move, name)
+        if isinstance(value, ModelSQL):
+            if field._type == 'reference':
+                return str(value)
+            return value.id
+        return value
+
+    @classmethod
+    def search_move_field(cls, name, clause):
+        nested = clause[0].lstrip(name)
+        if name.startswith('move_'):
+            name = name[5:]
+        return [('move.' + name + nested,) + tuple(clause[1:])]
 
 
 class Line(metaclass=PoolMeta):
@@ -238,3 +631,18 @@ class MoveLineList(CompanyReport):
 class MoveLineListSpreadSheet(CompanyReport):
     'Move Line List'
     __name__ = 'account.move.line.move_line_list_spreadsheet'
+
+
+class PartyBalanceAccountReport(CompanyReport):
+    'Party Balance Account Report'
+    __name__ = 'party.balance.account.report'
+
+
+class PartyBalanceLineReport(CompanyReport):
+    'Party Balance Line Report'
+    __name__ = 'party.balance.line.report'
+
+
+class PartyBalanceLineSpreadSheet(CompanyReport):
+    'Party Balance Line Spreadsheet'
+    __name__ = 'party.balance.line.spreadsheet'

@@ -10,9 +10,117 @@ msgctxt "field:account.move.line,origin_text:"
 msgid "Origin"
 msgstr "Origen"
 
+msgctxt "field:party.balance.account,balance:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "field:party.balance.account,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:party.balance.account,currency_digits:"
+msgid "Currency Digits"
+msgstr "Decimales de la moneda"
+
+msgctxt "field:party.balance.account,lines:"
+msgid "Lines"
+msgstr "Líneas"
+
+msgctxt "field:party.balance.account,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:party.balance.account,tax_identifier:"
+msgid "Tax Identifier"
+msgstr "Identificador fiscal"
+
+msgctxt "field:party.balance.account.context,category:"
+msgid "Category"
+msgstr "Categoría"
+
+msgctxt "field:party.balance.account.context,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:party.balance.account.context,from_date:"
+msgid "From Date"
+msgstr "Fecha inicial"
+
+msgctxt "field:party.balance.account.context,to_date:"
+msgid "To Date"
+msgstr "Hasta la fecha"
+
+msgctxt "field:party.balance.line,balance:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "field:party.balance.line,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:party.balance.line,credit:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "field:party.balance.line,currency_digits:"
+msgid "Currency Digits"
+msgstr "Decimales de la moneda"
+
+msgctxt "field:party.balance.line,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:party.balance.line,debit:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "field:party.balance.line,maturity_date:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "field:party.balance.line,move:"
+msgid "Move"
+msgstr "Asiento"
+
+msgctxt "field:party.balance.line,move_description:"
+msgid "Move Description"
+msgstr "Descripción asiento"
+
+msgctxt "field:party.balance.line,move_origin:"
+msgid "Move Origin"
+msgstr "Origen del asiento"
+
+msgctxt "field:party.balance.line,origin_text:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "field:party.balance.line,party:"
+msgid "Party"
+msgstr "Terceros"
+
 msgctxt "model:ir.action,name:act_move_line_balance"
 msgid "Payable/Receivable Lines Balance"
 msgstr "Cuenta corriente"
+
+msgctxt "model:ir.action,name:act_party_balance_account_form"
+msgid "Party Balance Account"
+msgstr "Saldos de terceros"
+
+msgctxt "model:ir.action,name:act_party_balance_line_form"
+msgid "Balance Lines"
+msgstr "Cuenta corriente"
+
+msgctxt "model:ir.action,name:party_balance_account_report"
+msgid "Party Balance"
+msgstr "Saldos de terceros"
+
+msgctxt "model:ir.action,name:party_balance_line_report"
+msgid "Party Balance Line"
+msgstr "Cuenta corriente"
+
+msgctxt "model:ir.action,name:party_balance_line_spreadsheet"
+msgid "Party Balance Line SpreadSheet"
+msgstr "Cuenta corriente - planilla"
 
 msgctxt "model:ir.action,name:report_move_line_list"
 msgid "Move Line List"
@@ -26,17 +134,21 @@ msgctxt "model:ir.action,name:wiz_move_line_balance"
 msgid "Payable/Receivable Lines Balance"
 msgstr "Cuenta corriente"
 
-msgctxt "report:account.move.line.move_line_list:"
-msgid "("
-msgstr ""
+msgctxt "model:ir.ui.menu,name:menu_party_balance_account"
+msgid "Party Balance Account"
+msgstr "Saldos de terceros"
 
-msgctxt "report:account.move.line.move_line_list:"
-msgid ")"
-msgstr ""
+msgctxt "model:party.balance.account,name:"
+msgid "Party Balance Account"
+msgstr "Saldos de terceros"
 
-msgctxt "report:account.move.line.move_line_list:"
-msgid "/"
-msgstr ""
+msgctxt "model:party.balance.account.context,name:"
+msgid "Party Balance Account Context"
+msgstr "Saldos de terceros - contexto"
+
+msgctxt "model:party.balance.line,name:"
+msgid "Party Balance Line"
+msgstr "Cuenta corriente"
 
 msgctxt "report:account.move.line.move_line_list:"
 msgid "Balance"
@@ -110,10 +222,102 @@ msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Reconciliation"
 msgstr "Conciliación"
 
+msgctxt "report:party.balance.account.report:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "report:party.balance.account.report:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "report:party.balance.account.report:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "report:party.balance.account.report:"
+msgid "Party Balance Account"
+msgstr "Saldos de terceros"
+
+msgctxt "report:party.balance.account.report:"
+msgid "Tax identifier"
+msgstr "Identificador fiscal"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Move Description"
+msgstr "Descripción asiento"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Move Lines"
+msgstr "Cuenta corriente"
+
+msgctxt "report:party.balance.line.report:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Move Description"
+msgstr "Descripción asiento"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Move Lines"
+msgstr "Cuenta corriente"
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Origin"
+msgstr "Origen"
+
 msgctxt "view:account.move.line:"
 msgid "Credit"
 msgstr "Haber"
 
 msgctxt "view:account.move.line:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "view:party.balance.line:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "view:party.balance.line:"
 msgid "Debit"
 msgstr "Debe"

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<form col="6">
+    <label name="company"/>
+    <field name="company"/>
+    <label name="category"/>
+    <field name="category"/>
+    <newline/>
+    <label name="from_date"/>
+    <field name="from_date"/>
+    <label name="to_date"/>
+    <field name="to_date"/>
+</form>
