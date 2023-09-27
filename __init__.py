@@ -15,4 +15,5 @@ def register():
         module='current_account', type_='wizard')
     Pool.register(
         account.MoveLineList,
+        account.MoveLineListSpreadSheet,
         module='current_account', type_='report')

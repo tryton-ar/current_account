@@ -18,6 +18,10 @@ msgctxt "model:ir.action,name:report_move_line_list"
 msgid "Move Line List"
 msgstr "Cuenta corriente"
 
+msgctxt "model:ir.action,name:report_move_line_list_spreadsheet"
+msgid "Move Line List SpreadSheet"
+msgstr "Cuenta corriente (planilla)"
+
 msgctxt "model:ir.action,name:wiz_move_line_balance"
 msgid "Payable/Receivable Lines Balance"
 msgstr "Cuenta corriente"
@@ -67,6 +71,42 @@ msgid "Move Lines"
 msgstr "Cuenta corriente"
 
 msgctxt "report:account.move.line.move_line_list:"
+msgid "Reconciliation"
+msgstr "Conciliación"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Balance"
+msgstr "Saldo"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Maturity Date"
+msgstr "Fecha vencimiento"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Move"
+msgstr "Asiento"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Move Lines"
+msgstr "Cuenta corriente"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Reconciliation"
 msgstr "Conciliación"
 

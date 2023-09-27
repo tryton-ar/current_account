@@ -55,5 +55,21 @@
             <field name="action" ref="report_move_line_list"/>
         </record>
 
+<!-- Move Line Report SpreadSheet -->
+
+        <record model="ir.action.report" id="report_move_line_list_spreadsheet">
+            <field name="name">Move Line List SpreadSheet</field>
+            <field name="model">account.move.line</field>
+            <field name="report_name">account.move.line.move_line_list_spreadsheet</field>
+            <field name="report">current_account/move_line_list.fods</field>
+            <field name="extension">xls</field>
+        </record>
+
+        <record model="ir.action.keyword" id="report_move_line_list_spreadsheet_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">account.move.line,-1</field>
+            <field name="action" ref="report_move_line_list_spreadsheet"/>
+        </record>
+
     </data>
 </tryton>

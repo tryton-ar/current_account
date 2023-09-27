@@ -18,7 +18,7 @@ class Line(metaclass=PoolMeta):
 
     origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
     balance = fields.Function(fields.Numeric('Balance',
-        digits=(16, Eval('currency_digits', 2)), depends=['currency_digits']),
+        digits=(16, Eval('currency_digits', 2))),
         'get_balance')
 
     @classmethod
@@ -29,7 +29,8 @@ class Line(metaclass=PoolMeta):
         ids = [x.id for x in lines]
         res = {}.fromkeys(ids, Decimal('0.0'))
         fiscalyear_id = journal_id = period_id = account_id = None
-        party_id = account_kind = None
+        from_date = to_date = None
+        company_id = party_id = account_kind = None
 
         from_fiscalyear = where_fiscalyear = ''
         if Transaction().context.get('fiscalyear'):
@@ -59,6 +60,22 @@ class Line(metaclass=PoolMeta):
                 am.period = %d AND
                 ''' % period_id
 
+        where_from_date = ''
+        if Transaction().context.get('from_date'):
+            from_date = Transaction().context.get('from_date')
+        if from_date:
+            where_from_date = '''
+                am.date >= '%s' AND
+                ''' % from_date
+
+        where_to_date = ''
+        if Transaction().context.get('to_date'):
+            to_date = Transaction().context.get('to_date')
+        if to_date:
+            where_to_date = '''
+                am.date <= '%s' AND
+                ''' % to_date
+
         where_account = ''
         if Transaction().context.get('account'):
             account_id = int(Transaction().context.get('account'))
@@ -66,6 +83,14 @@ class Line(metaclass=PoolMeta):
             where_account = '''
                 aml.account = %d AND
                 ''' % account_id
+
+        where_company = ''
+        if Transaction().context.get('company'):
+            company_id = int(Transaction().context.get('company'))
+        if company_id:
+            where_company = '''
+                am.company = %d AND
+                ''' % company_id
 
         where_party = ''
         if Transaction().context.get('party'):
@@ -99,6 +124,7 @@ class Line(metaclass=PoolMeta):
                     account_move am""" + from_fiscalyear + """,
                     account_move_line aml""" + from_account_kind + """
                 WHERE """ + where_fiscalyear + where_journal
+                    + where_from_date + where_to_date + where_company
                     + where_period + where_account + where_party
                     + where_account_kind + """
                     aml.move = am.id
@@ -176,17 +202,30 @@ class OpenMoveLineBalance(Wizard):
         Party = Pool().get('party.party')
 
         party = Party(Transaction().context['active_id'])
-
-        action['pyson_domain'] = PYSONEncoder().encode([
+        pyson_domain = [
+                ('move.company', '=', Transaction().context['company']),
                 ('party', '=', Transaction().context['active_id']),
                 ['OR',
                     ('account.type.payable', '=', True),
                     ('account.type.receivable', '=', True)],
-                ])
-        action['pyson_context'] = PYSONEncoder().encode({
+                ]
+        pyson_context = {
+                'company': Transaction().context['company'],
                 'party': Transaction().context['active_id'],
                 'account_kind': ['payable', 'receivable'],
-                })
+                }
+
+        if Transaction().context.get('from_date'):
+            pyson_domain.append(
+                ('date', '>=', Transaction().context['from_date']))
+            pyson_context['from_date'] = Transaction().context['from_date']
+        if Transaction().context.get('to_date'):
+            pyson_domain.append(
+                ('date', '<=', Transaction().context['to_date']))
+            pyson_context['to_date'] = Transaction().context['to_date']
+
+        action['pyson_domain'] = PYSONEncoder().encode(pyson_domain)
+        action['pyson_context'] = PYSONEncoder().encode(pyson_context)
         action['name'] = 'Cuenta corriente - %s' % (party.name)
         return action, {}
 
@@ -194,3 +233,8 @@ class OpenMoveLineBalance(Wizard):
 class MoveLineList(CompanyReport):
     'Move Line List'
     __name__ = 'account.move.line.move_line_list'
+
+
+class MoveLineListSpreadSheet(CompanyReport):
+    'Move Line List'
+    __name__ = 'account.move.line.move_line_list_spreadsheet'
