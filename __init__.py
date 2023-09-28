@@ -14,11 +14,11 @@ def register():
         account.Line,
         module='current_account', type_='model')
     Pool.register(
-        account.OpenMoveLineBalance,
+        account.OpenStatementOfAccount,
         module='current_account', type_='wizard')
     Pool.register(
-        account.MoveLineList,
-        account.MoveLineListSpreadSheet,
+        account.StatementOfAccountReport,
+        account.StatementOfAccountSpreadSheet,
         account.PartyBalanceAccountReport,
         account.PartyBalanceLineReport,
         account.PartyBalanceLineSpreadSheet,

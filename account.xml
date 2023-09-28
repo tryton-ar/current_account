@@ -2,42 +2,73 @@
 <tryton>
     <data>
 
-<!-- Move Line Balance -->
+<!-- Open Statement of Account -->
 
-        <record model="ir.ui.view" id="move_line_balance_view_tree">
-            <field name="model">account.move.line</field>
-            <field name="type">tree</field>
-            <field name="name">move_line_balance_tree</field>
-        </record>
-
-        <record model="ir.action.wizard" id="wiz_move_line_balance">
-            <field name="name">Payable/Receivable Lines Balance</field>
+        <record model="ir.action.wizard" id="wiz_statement_of_account">
+            <field name="name">Statement of Account</field>
             <field name="wiz_name">account.move.line.balance</field>
         </record>
 
-        <record model="ir.action.keyword" id="act_move_line_balance_keyword1">
+        <record model="ir.action.keyword" id="wiz_statement_of_account_keyword">
             <field name="keyword">form_relate</field>
             <field name="model">party.party,-1</field>
-            <field name="action" ref="wiz_move_line_balance"/>
+            <field name="action" ref="wiz_statement_of_account"/>
         </record>
 
-<!-- All account move lines payable or receivable, with balance view -->
+<!-- Statement of Account -->
 
-        <record model="ir.action.act_window" id="act_move_line_balance">
-            <field name="name">Payable/Receivable Lines Balance</field>
+        <record model="ir.ui.view" id="move_statement_of_account_view_list">
+            <field name="model">account.move.line</field>
+            <field name="type">tree</field>
+            <field name="name">move_line_balance_list</field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_statement_of_account">
+            <field name="name">Statement of Account</field>
             <field name="res_model">account.move.line</field>
         </record>
         <record model="ir.action.act_window.view"
-            id="act_move_line_balance_view1">
+            id="act_statement_of_account_view_list">
             <field name="sequence" eval="10"/>
-            <field name="view" ref="move_line_balance_view_tree"/>
-            <field name="act_window" ref="act_move_line_balance"/>
+            <field name="view" ref="move_statement_of_account_view_list"/>
+            <field name="act_window" ref="act_statement_of_account"/>
         </record>
 
         <record model="ir.action-res.group"
-            id="act_move_line_payable_receivable-group_account">
-            <field name="action" ref="act_move_line_balance"/>
+            id="act_statement_of_account-group_account">
+            <field name="action" ref="act_statement_of_account"/>
             <field name="group" ref="account.group_account"/>
+        </record>
+
+<!-- Statement of Account Report -->
+
+        <record model="ir.action.report" id="report_statement_of_account">
+            <field name="name">Statement of Account</field>
+            <field name="model">account.move.line</field>
+            <field name="report_name">account.move.line.move_line_list</field>
+            <field name="report">current_account/move_line_list.fodt</field>
+        </record>
+
+        <record model="ir.action.keyword" id="report_statement_of_account_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">account.move.line,-1</field>
+            <field name="action" ref="report_statement_of_account"/>
+        </record>
+
+<!-- Statement of Account SpreadSheet -->
+
+        <record model="ir.action.report" id="report_statement_of_account_spreadsheet">
+            <field name="name">Statement of Account</field>
+            <field name="model">account.move.line</field>
+            <field name="report_name">account.move.line.move_line_list_spreadsheet</field>
+            <field name="report">current_account/move_line_list.fods</field>
+            <field name="extension">xls</field>
+        </record>
+
+        <record model="ir.action.keyword" id="report_statement_of_account_spreadsheet_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">account.move.line,-1</field>
+            <field name="action" ref="report_statement_of_account_spreadsheet"/>
         </record>
 
 <!-- Party Balance Account -->
@@ -68,6 +99,8 @@
             action="act_party_balance_account_form" id="menu_party_balance_account"
             sequence="100"/>
 
+<!-- Balance Line -->
+
         <record model="ir.ui.view" id="party_balance_line_view_list">
             <field name="model">party.balance.line</field>
             <field name="type">tree</field>
@@ -93,35 +126,17 @@
             <field name="action" ref="act_party_balance_line_form"/>
         </record>
 
-<!-- Move Line Report -->
-
-        <record model="ir.action.report" id="report_move_line_list">
-            <field name="name">Move Line List</field>
-            <field name="model">account.move.line</field>
-            <field name="report_name">account.move.line.move_line_list</field>
-            <field name="report">current_account/move_line_list.fodt</field>
+        <record model="ir.rule.group" id="rule_group_balance_line_companies">
+            <field name="name">User in companies</field>
+            <field name="model"
+                search="[('model', '=', 'party.balance.line')]"/>
+            <field name="global_p" eval="True"/>
         </record>
-
-        <record model="ir.action.keyword" id="report_move_line_list_keyword">
-            <field name="keyword">form_print</field>
-            <field name="model">account.move.line,-1</field>
-            <field name="action" ref="report_move_line_list"/>
-        </record>
-
-<!-- Move Line Report SpreadSheet -->
-
-        <record model="ir.action.report" id="report_move_line_list_spreadsheet">
-            <field name="name">Move Line List SpreadSheet</field>
-            <field name="model">account.move.line</field>
-            <field name="report_name">account.move.line.move_line_list_spreadsheet</field>
-            <field name="report">current_account/move_line_list.fods</field>
-            <field name="extension">xls</field>
-        </record>
-
-        <record model="ir.action.keyword" id="report_move_line_list_spreadsheet_keyword">
-            <field name="keyword">form_print</field>
-            <field name="model">account.move.line,-1</field>
-            <field name="action" ref="report_move_line_list_spreadsheet"/>
+        <record model="ir.rule" id="rule_balance_line_companies">
+            <field name="domain"
+                eval="[('company', 'in', Eval('companies', []))]"
+                pyson="1"/>
+            <field name="rule_group" ref="rule_group_balance_line_companies"/>
         </record>
 
 <!-- Party Balance Account Report -->
