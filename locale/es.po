@@ -98,8 +98,8 @@ msgctxt "field:party.balance.line,party:"
 msgid "Party"
 msgstr "Terceros"
 
-msgctxt "model:ir.action,name:act_move_line_balance"
-msgid "Payable/Receivable Lines Balance"
+msgctxt "model:ir.action,name:act_statement_of_account"
+msgid "Statement of Account"
 msgstr "Cuenta corriente"
 
 msgctxt "model:ir.action,name:act_party_balance_account_form"
@@ -122,16 +122,16 @@ msgctxt "model:ir.action,name:party_balance_line_spreadsheet"
 msgid "Party Balance Line SpreadSheet"
 msgstr "Cuenta corriente - planilla"
 
-msgctxt "model:ir.action,name:report_move_line_list"
-msgid "Move Line List"
+msgctxt "model:ir.action,name:report_statement_of_account"
+msgid "Statement of Account"
 msgstr "Cuenta corriente"
 
-msgctxt "model:ir.action,name:report_move_line_list_spreadsheet"
-msgid "Move Line List SpreadSheet"
+msgctxt "model:ir.action,name:report_statement_of_account_spreadsheet"
+msgid "Statement of Account"
 msgstr "Cuenta corriente (planilla)"
 
-msgctxt "model:ir.action,name:wiz_move_line_balance"
-msgid "Payable/Receivable Lines Balance"
+msgctxt "model:ir.action,name:wiz_statement_of_account"
+msgid "Statement of Account"
 msgstr "Cuenta corriente"
 
 msgctxt "model:ir.ui.menu,name:menu_party_balance_account"

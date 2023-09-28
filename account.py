@@ -30,7 +30,7 @@ class PartyBalanceAccount(ModelSQL, ModelView):
     balance = fields.Function(fields.Numeric('Balance',
         digits=(16, Eval('currency_digits', 2))),
         'get_balance', searcher='search_balance')
-    lines = fields.One2Many('party.balance.line', 'account', 'Lines',
+    lines = fields.One2Many('party.balance.line', 'balance_account', 'Lines',
         readonly=True)
 
     @classmethod
@@ -274,6 +274,8 @@ class PartyBalanceLine(ModelSQL, ModelView):
     'Party Balance Line'
     __name__ = 'party.balance.line'
 
+    balance_account = fields.Many2One('party.balance.account',
+        'Party Balance Account')
     move = fields.Many2One('account.move', 'Move')
     date = fields.Date('Date')
     maturity_date = fields.Date('Maturity Date')
@@ -282,7 +284,8 @@ class PartyBalanceLine(ModelSQL, ModelView):
         fields.Reference("Move Origin", selection='get_move_origin'),
         'get_move_field', searcher='search_move_field')
     party = fields.Many2One('party.party', 'Party',
-        states={'invisible': ~Eval('party_required', False)})
+        states={'invisible': ~Eval('party_required', False)},
+        context={'company': Eval('company', -1)}, depends={'company'})
     company = fields.Many2One('company.company', 'Company')
     debit = fields.Numeric('Debit',
         digits=(16, Eval('currency_digits', 2)))
@@ -319,7 +322,9 @@ class PartyBalanceLine(ModelSQL, ModelView):
             if hasattr(field, 'set'):
                 continue
             field_line = getattr(Line, fname, None)
-            if fname == 'balance':
+            if fname == 'balance_account':
+                column = line.party.as_('balance_account')
+            elif fname == 'balance':
                 if database.has_window_functions():
                     w_columns = [line.party]
                     column = Sum(line.debit - line.credit,
@@ -411,8 +416,7 @@ class Line(metaclass=PoolMeta):
 
     origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
     balance = fields.Function(fields.Numeric('Balance',
-        digits=(16, Eval('currency_digits', 2))),
-        'get_balance')
+        digits=(16, 2)), 'get_balance')
 
     @classmethod
     def get_balance(cls, lines, name):
@@ -584,12 +588,12 @@ class Line(metaclass=PoolMeta):
         return result
 
 
-class OpenMoveLineBalance(Wizard):
-    'Open Type'
+class OpenStatementOfAccount(Wizard):
+    'Open Statement of Account'
     __name__ = 'account.move.line.balance'
 
     start_state = 'open_'
-    open_ = StateAction('current_account.act_move_line_balance')
+    open_ = StateAction('current_account.act_statement_of_account')
 
     def do_open_(self, action):
         Party = Pool().get('party.party')
@@ -623,13 +627,13 @@ class OpenMoveLineBalance(Wizard):
         return action, {}
 
 
-class MoveLineList(CompanyReport):
-    'Move Line List'
+class StatementOfAccountReport(CompanyReport):
+    'Statement of Account'
     __name__ = 'account.move.line.move_line_list'
 
 
-class MoveLineListSpreadSheet(CompanyReport):
-    'Move Line List'
+class StatementOfAccountSpreadSheet(CompanyReport):
+    'Statement of Account'
     __name__ = 'account.move.line.move_line_list_spreadsheet'
 
 
