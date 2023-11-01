@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <tree>
     <field name="origin_text"/>
+    <field name="move"/>
     <field name="move_description"/>
     <field name="date"/>
     <field name="maturity_date"/>
