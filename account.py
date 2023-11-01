@@ -384,6 +384,8 @@ class PartyBalanceLine(ModelSQL, ModelView):
                 reference = 'Comprobante %s' % str(line.move_origin.number)
             elif model == 'account.move':
                 reference = 'Asiento %s' % str(line.move_origin.number)
+            elif model == 'account.statement':
+                reference = 'Extracto %s' % str(line.move_origin.rec_name)
             result[line.id] = reference
         return result
 
@@ -584,6 +586,8 @@ class Line(metaclass=PoolMeta):
                 reference = 'Comprobante %s' % str(line.move_origin.number)
             elif model == 'account.move':
                 reference = 'Asiento %s' % str(line.move_origin.number)
+            elif model == 'account.statement':
+                reference = 'Extracto %s' % str(line.move_origin.rec_name)
             result[line.id] = reference
         return result
 
