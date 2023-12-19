@@ -375,11 +375,14 @@ class PartyBalanceLine(ModelSQL, ModelView):
             model = origin[:origin.find(',')]
             if model == 'account.invoice':
                 invoice = line.move_origin
-                reference = 'Factura '
                 if invoice.type == 'in':
-                    reference += invoice.reference or ''
+                    reference = '%s %s' % (
+                        invoice.tipo_comprobante_string or 'Factura',
+                        invoice.reference or '')
                 else:
-                    reference += invoice.number or ''
+                    reference = '%s %s' % (
+                        invoice.invoice_type.invoice_type_string or 'Factura',
+                        invoice.number or '')
             elif model == 'account.voucher':
                 reference = 'Comprobante %s' % str(line.move_origin.number)
             elif model == 'account.move':
@@ -577,11 +580,14 @@ class Line(metaclass=PoolMeta):
             model = origin[:origin.find(',')]
             if model == 'account.invoice':
                 invoice = line.move_origin
-                reference = 'Factura '
                 if invoice.type == 'in':
-                    reference += invoice.reference or ''
+                    reference = '%s %s' % (
+                        invoice.tipo_comprobante_string or 'Factura',
+                        invoice.reference or '')
                 else:
-                    reference += invoice.number or ''
+                    reference = '%s %s' % (
+                        invoice.invoice_type.invoice_type_string or 'Factura',
+                        invoice.number or '')
             elif model == 'account.voucher':
                 reference = 'Comprobante %s' % str(line.move_origin.number)
             elif model == 'account.move':
