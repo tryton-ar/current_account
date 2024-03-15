@@ -13,6 +13,7 @@ from trytond.pool import Pool, PoolMeta
 from trytond.pyson import PYSONEncoder, Eval, If
 from trytond.transaction import Transaction
 from trytond.tools import reduce_ids, grouped_slice
+from trytond.report import Report
 from trytond.modules.company import CompanyReport
 
 
@@ -647,7 +648,7 @@ class StatementOfAccountSpreadSheet(CompanyReport):
     __name__ = 'account.move.line.move_line_list_spreadsheet'
 
 
-class PartyBalanceAccountReport(CompanyReport):
+class PartyBalanceAccountReport(Report):
     'Party Balance Account Report'
     __name__ = 'party.balance.account.report'
 
