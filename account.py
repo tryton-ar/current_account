@@ -17,6 +17,132 @@ from trytond.report import Report
 from trytond.modules.company import CompanyReport
 
 
+class OriginTextMixin:
+    __slots__ = ()
+
+    @classmethod
+    def get_origin_text(cls, lines, name):
+        result = {}
+        for line in lines:
+            reference = ''
+            document = line.move_origin
+            origin = str(document)
+            model = origin[:origin.find(',')]
+            if model == 'account.invoice':
+                reference = cls._get_invoice_text(document)
+            elif model == 'account.voucher':
+                reference = cls._get_voucher_text(document)
+            elif model == 'account.move':
+                reference = 'Asiento %s' % str(document.number)
+            elif model == 'account.statement':
+                reference = 'Extracto %s' % str(document.rec_name)
+            result[line.id] = reference
+        return result
+
+    @classmethod
+    def _get_invoice_text(cls, invoice):
+        if invoice.type == 'in':
+            invoice_names = {
+                '001': 'FC A',
+                '002': 'ND A',
+                '003': 'NC A',
+                '004': 'RC A',
+                '005': 'NV A',
+                '006': 'FC B',
+                '007': 'ND B',
+                '008': 'NC B',
+                '009': 'RC B',
+                '010': 'NV B',
+                '011': 'FC C',
+                '012': 'ND C',
+                '013': 'NC C',
+                '015': 'RC C',
+                '016': 'NV C',
+                '017': 'LQ A',
+                '018': 'LQ B',
+                '019': 'FC EXT',
+                '020': 'ND EXT',
+                '021': 'NC EXT',
+                '037': 'ND RG1415',
+                '038': 'NC RG1415',
+                '051': 'FC M',
+                '052': 'ND M',
+                '053': 'NC M',
+                '054': 'RC M',
+                '055': 'NV M',
+                '063': 'LQ A',
+                '064': 'LQ B',
+                '066': 'D IMP',
+                '068': 'LQ C',
+                '081': 'TF A',
+                '082': 'TF B',
+                '083': 'T',
+                '089': 'RD',
+                '091': 'RM R',
+                '110': 'TNC',
+                '111': 'TF C',
+                '112': 'TNC A',
+                '113': 'TNC B',
+                '114': 'TNC C',
+                '115': 'TND A',
+                '116': 'TND B',
+                '117': 'TND C',
+                '118': 'TF M',
+                '119': 'TNC M',
+                '120': 'TND M',
+                }
+            if invoice.tipo_comprobante in invoice_names:
+                invoice_name = invoice_names[invoice.tipo_comprobante]
+            else:
+                invoice_name = invoice.tipo_comprobante_string or 'FC'
+            invoice_number = invoice.reference or ''
+        else:
+            invoice_names = {
+                '1': 'FC A',
+                '2': 'ND A',
+                '3': 'NC A',
+                '4': 'RC A',
+                '5': 'NV A',
+                '6': 'FC B',
+                '7': 'ND B',
+                '8': 'NC B',
+                '9': 'RC B',
+                '10': 'NV B',
+                '11': 'FC C',
+                '12': 'ND C',
+                '13': 'NC C',
+                '15': 'RC C',
+                '16': 'NV C',
+                '19': 'FC E',
+                '20': 'ND E',
+                '21': 'NC E',
+                '201': 'FCE A',
+                '202': 'NDE A',
+                '203': 'NCE A',
+                '206': 'FCE B',
+                '207': 'NDE B',
+                '208': 'NCE B',
+                '211': 'FCE C',
+                '212': 'NDE C',
+                '213': 'NCE C',
+                }
+            if invoice.invoice_type.invoice_type in invoice_names:
+                invoice_name = invoice_names[invoice.invoice_type.invoice_type]
+            else:
+                invoice_name = invoice.invoice_type.invoice_type_string or 'FC'
+            invoice_number = invoice.number or ''
+        return '%s %s' % (invoice_name, invoice_number)
+
+    @classmethod
+    def _get_voucher_text(cls, voucher):
+        if voucher.voucher_type == 'payment':
+            voucher_name = 'Pago'
+        else:
+            voucher_name = 'Recibo'
+        voucher_number = voucher.number or ''
+        return '%s %s' % (voucher_name, voucher_number)
+
+
 class PartyBalanceAccount(ModelSQL, ModelView):
     'Party Balance Account'
     __name__ = 'party.balance.account'
@@ -271,7 +397,7 @@ class PartyBalanceAccountContext(ModelView):
         return Transaction().context.get('to_date')
 
 
-class PartyBalanceLine(ModelSQL, ModelView):
+class PartyBalanceLine(OriginTextMixin, ModelSQL, ModelView):
     'Party Balance Line'
     __name__ = 'party.balance.line'
 
@@ -368,32 +494,6 @@ class PartyBalanceLine(ModelSQL, ModelView):
         return self.company.currency.digits
 
     @classmethod
-    def get_origin_text(cls, lines, name):
-        result = {}
-        for line in lines:
-            reference = ''
-            origin = str(line.move_origin)
-            model = origin[:origin.find(',')]
-            if model == 'account.invoice':
-                invoice = line.move_origin
-                if invoice.type == 'in':
-                    reference = '%s %s' % (
-                        invoice.tipo_comprobante_string or 'Factura',
-                        invoice.reference or '')
-                else:
-                    reference = '%s %s' % (
-                        invoice.invoice_type.invoice_type_string or 'Factura',
-                        invoice.number or '')
-            elif model == 'account.voucher':
-                reference = 'Comprobante %s' % str(line.move_origin.number)
-            elif model == 'account.move':
-                reference = 'Asiento %s' % str(line.move_origin.number)
-            elif model == 'account.statement':
-                reference = 'Extracto %s' % str(line.move_origin.rec_name)
-            result[line.id] = reference
-        return result
-
-    @classmethod
     def get_move_origin(cls):
         Move = Pool().get('account.move')
         return Move.get_origin()
@@ -417,7 +517,7 @@ class PartyBalanceLine(ModelSQL, ModelView):
         return [('move.' + name + nested,) + tuple(clause[1:])]
 
 
-class Line(metaclass=PoolMeta):
+class Line(OriginTextMixin, metaclass=PoolMeta):
     __name__ = 'account.move.line'
 
     origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
@@ -571,32 +671,6 @@ class Line(metaclass=PoolMeta):
             ids = [x[0] for x in result]
             lines = cls.browse(ids)
         return lines
-
-    @classmethod
-    def get_origin_text(cls, lines, name):
-        result = {}
-        for line in lines:
-            reference = ''
-            origin = str(line.move_origin)
-            model = origin[:origin.find(',')]
-            if model == 'account.invoice':
-                invoice = line.move_origin
-                if invoice.type == 'in':
-                    reference = '%s %s' % (
-                        invoice.tipo_comprobante_string or 'Factura',
-                        invoice.reference or '')
-                else:
-                    reference = '%s %s' % (
-                        invoice.invoice_type.invoice_type_string or 'Factura',
-                        invoice.number or '')
-            elif model == 'account.voucher':
-                reference = 'Comprobante %s' % str(line.move_origin.number)
-            elif model == 'account.move':
-                reference = 'Asiento %s' % str(line.move_origin.number)
-            elif model == 'account.statement':
-                reference = 'Extracto %s' % str(line.move_origin.rec_name)
-            result[line.id] = reference
-        return result
 
 
 class OpenStatementOfAccount(Wizard):
