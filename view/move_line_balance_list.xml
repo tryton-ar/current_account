@@ -9,4 +9,5 @@
     <field name="credit" sum="Credit"/>
     <field name="balance"/>
     <field name="reconciliation"/>
+    <field name="visual_attribute" tree_invisible="1"/>
 </tree>

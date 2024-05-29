@@ -523,6 +523,8 @@ class Line(OriginTextMixin, metaclass=PoolMeta):
     origin_text = fields.Function(fields.Char('Origin'), 'get_origin_text')
     balance = fields.Function(fields.Numeric('Balance',
         digits=(16, 2)), 'get_balance')
+    visual_attribute = fields.Function(fields.Char('Visual Attribute'),
+        'get_visual_attribute')
 
     @classmethod
     def get_balance(cls, lines, name):
@@ -671,6 +673,22 @@ class Line(OriginTextMixin, metaclass=PoolMeta):
             ids = [x[0] for x in result]
             lines = cls.browse(ids)
         return lines
+
+    def get_visual_attribute(self, name):
+        result = ''
+        document = self.move_origin
+        origin = str(document)
+        model = origin[:origin.find(',')]
+        if model == 'account.voucher':
+            if document.state == 'cancelled':
+                result = 'muted'
+        return result
+
+    @classmethod
+    def view_attributes(cls):
+        return super().view_attributes() + [
+            ('/tree', 'visual', Eval('visual_attribute')),
+            ]
 
 
 class OpenStatementOfAccount(Wizard):

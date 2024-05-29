@@ -10,6 +10,10 @@ msgctxt "field:account.move.line,origin_text:"
 msgid "Origin"
 msgstr "Origen"
 
+msgctxt "field:account.move.line,visual_attribute:"
+msgid "Visual Attribute"
+msgstr "Atributo visual"
+
 msgctxt "field:party.balance.account,balance:"
 msgid "Balance"
 msgstr "Saldo"
