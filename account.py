@@ -27,15 +27,16 @@ class OriginTextMixin:
             reference = ''
             document = line.move_origin
             origin = str(document)
-            model = origin[:origin.find(',')]
-            if model == 'account.invoice':
-                reference = cls._get_invoice_text(document)
-            elif model == 'account.voucher':
-                reference = cls._get_voucher_text(document)
-            elif model == 'account.move':
-                reference = 'Asiento %s' % str(document.number)
-            elif model == 'account.statement':
-                reference = 'Extracto %s' % str(document.rec_name)
+            if not origin.endswith('-1'):
+                model = origin[:origin.find(',')]
+                if model == 'account.invoice':
+                    reference = cls._get_invoice_text(document)
+                elif model == 'account.voucher':
+                    reference = cls._get_voucher_text(document)
+                elif model == 'account.move':
+                    reference = 'Asiento %s' % str(document.number)
+                elif model == 'account.statement':
+                    reference = 'Extracto %s' % str(document.rec_name)
             result[line.id] = reference
         return result
 
