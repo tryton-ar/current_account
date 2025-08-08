@@ -412,7 +412,6 @@ class PartyBalanceLine(OriginTextMixin, ModelSQL, ModelView):
         fields.Reference("Move Origin", selection='get_move_origin'),
         'get_move_field', searcher='search_move_field')
     party = fields.Many2One('party.party', 'Party',
-        states={'invisible': ~Eval('party_required', False)},
         context={'company': Eval('company', -1)}, depends={'company'})
     company = fields.Many2One('company.company', 'Company')
     debit = fields.Numeric('Debit',
@@ -421,7 +420,7 @@ class PartyBalanceLine(OriginTextMixin, ModelSQL, ModelView):
         digits=(16, Eval('currency_digits', 2)))
     balance = fields.Numeric('Balance',
         digits=(16, Eval('currency_digits', 2)))
-    move_description = fields.Char('Move Description')
+    move_description_used = fields.Char('Move Description')
     currency_digits = fields.Function(fields.Integer('Currency Digits'),
         'get_currency_digits')
 
@@ -460,7 +459,7 @@ class PartyBalanceLine(OriginTextMixin, ModelSQL, ModelView):
                             order_by=[move.date.asc, line.id])).as_('balance')
                 else:
                     column = (line.debit - line.credit).as_('balance')
-            elif fname == 'move_description':
+            elif fname == 'move_description_used':
                 column = Column(move, 'description').as_(fname)
             elif (not field_line
                     or fname == 'state'

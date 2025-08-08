@@ -15,7 +15,7 @@
             <field name="action" ref="wiz_statement_of_account"/>
         </record>
 
-<!-- Statement of Account -->
+        <!-- Statement of Account -->
 
         <record model="ir.ui.view" id="move_statement_of_account_view_list">
             <field name="model">account.move.line</field>
@@ -40,7 +40,7 @@
             <field name="group" ref="account.group_account"/>
         </record>
 
-<!-- Statement of Account Report -->
+        <!-- Statement of Account Report -->
 
         <record model="ir.action.report" id="report_statement_of_account">
             <field name="name">Statement of Account</field>

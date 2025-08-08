@@ -2,11 +2,11 @@
 <tree>
     <field name="origin_text"/>
     <field name="move"/>
-    <field name="move_description"/>
+    <field name="move_description_used"/>
     <field name="date"/>
     <field name="maturity_date"/>
-    <field name="debit" sum="Debit"/>
-    <field name="credit" sum="Credit"/>
+    <field name="debit" sum="1"/>
+    <field name="credit" sum="1"/>
     <field name="balance"/>
     <field name="reconciliation"/>
     <field name="visual_attribute" tree_invisible="1"/>
