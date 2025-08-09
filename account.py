@@ -202,9 +202,6 @@ class PartyBalanceAccount(ModelSQL, ModelView):
 
         result = {'tax_identifier': dict((p.id, None) for p in parties)}
         types = Party.tax_identifier_types()
-        # Add Argentine DNI if not included
-        if 'ar_dni' not in types:
-            types.append('ar_dni')
         for p in parties:
             party, = Party.browse([p.id])
             for identifier in party.identifiers:
@@ -219,8 +216,6 @@ class PartyBalanceAccount(ModelSQL, ModelView):
 
         _, operator, value = clause
         types = Party.tax_identifier_types()
-        if 'ar_dni' not in types:
-            types.append('ar_dni')
         domain = [
             ('identifiers', 'where', [
                     ('code', operator, value),
@@ -650,10 +645,10 @@ class Line(OriginTextMixin, metaclass=PoolMeta):
     @classmethod
     def search(cls, args, offset=0, limit=None, order=None, count=False,
             query=False):
-        lines = super().search(args, offset, limit, order, count, query)
-
-        Move = Pool().get('account.move')
         cursor = Transaction().connection.cursor()
+        Move = Pool().get('account.move')
+
+        lines = super().search(args, offset, limit, order, count, query)
 
         table = cls.__table__()
         move = Move.__table__()
