@@ -36,7 +36,7 @@ msgstr "Nombre"
 
 msgctxt "field:party.balance.account,tax_identifier:"
 msgid "Tax Identifier"
-msgstr "Identificador fiscal"
+msgstr "CUIT / DNI"
 
 msgctxt "field:party.balance.account.context,category:"
 msgid "Category"
@@ -57,6 +57,10 @@ msgstr "Hasta la fecha"
 msgctxt "field:party.balance.line,balance:"
 msgid "Balance"
 msgstr "Saldo"
+
+msgctxt "field:party.balance.line,balance_account:"
+msgid "Party Balance Account"
+msgstr "Saldos de terceros"
 
 msgctxt "field:party.balance.line,company:"
 msgid "Company"
@@ -86,7 +90,7 @@ msgctxt "field:party.balance.line,move:"
 msgid "Move"
 msgstr "Asiento"
 
-msgctxt "field:party.balance.line,move_description:"
+msgctxt "field:party.balance.line,move_description_used:"
 msgid "Move Description"
 msgstr "Descripción asiento"
 
@@ -100,11 +104,7 @@ msgstr "Origen"
 
 msgctxt "field:party.balance.line,party:"
 msgid "Party"
-msgstr "Terceros"
-
-msgctxt "model:ir.action,name:act_statement_of_account"
-msgid "Statement of Account"
-msgstr "Cuenta corriente"
+msgstr "Tercero"
 
 msgctxt "model:ir.action,name:act_party_balance_account_form"
 msgid "Party Balance Account"
@@ -112,6 +112,10 @@ msgstr "Saldos de terceros"
 
 msgctxt "model:ir.action,name:act_party_balance_line_form"
 msgid "Balance Lines"
+msgstr "Cuenta corriente"
+
+msgctxt "model:ir.action,name:act_statement_of_account"
+msgid "Statement of Account"
 msgstr "Cuenta corriente"
 
 msgctxt "model:ir.action,name:party_balance_account_report"
@@ -123,7 +127,7 @@ msgid "Party Balance Line"
 msgstr "Cuenta corriente"
 
 msgctxt "model:ir.action,name:party_balance_line_spreadsheet"
-msgid "Party Balance Line SpreadSheet"
+msgid "Party Balance Line Spreadsheet"
 msgstr "Cuenta corriente - planilla"
 
 msgctxt "model:ir.action,name:report_statement_of_account"
@@ -137,6 +141,10 @@ msgstr "Cuenta corriente (planilla)"
 msgctxt "model:ir.action,name:wiz_statement_of_account"
 msgid "Statement of Account"
 msgstr "Cuenta corriente"
+
+msgctxt "model:ir.rule.group,name:rule_group_balance_line_companies"
+msgid "User in companies"
+msgstr "Usuario en las empresas"
 
 msgctxt "model:ir.ui.menu,name:menu_party_balance_account"
 msgid "Party Balance Account"
@@ -155,6 +163,10 @@ msgid "Party Balance Line"
 msgstr "Cuenta corriente"
 
 msgctxt "report:account.move.line.move_line_list:"
+msgid "/"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list:"
 msgid "Balance"
 msgstr "Saldo"
 
@@ -171,24 +183,64 @@ msgid "Debit"
 msgstr "Debe"
 
 msgctxt "report:account.move.line.move_line_list:"
-msgid "Description"
-msgstr "Descripción"
-
-msgctxt "report:account.move.line.move_line_list:"
 msgid "Maturity Date"
 msgstr "Fecha vencimiento"
 
 msgctxt "report:account.move.line.move_line_list:"
-msgid "Move"
-msgstr "Asiento"
+msgid "Move Description"
+msgstr "Descripción asiento"
 
 msgctxt "report:account.move.line.move_line_list:"
 msgid "Move Lines"
 msgstr "Cuenta corriente"
 
 msgctxt "report:account.move.line.move_line_list:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "report:account.move.line.move_line_list:"
 msgid "Reconciliation"
 msgstr "Conciliación"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "$"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "("
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid ")"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid ","
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "/"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "/for"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "/if"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "00/00/0000"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "00:00:00"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "???"
+msgstr ""
 
 msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Balance"
@@ -207,24 +259,108 @@ msgid "Debit"
 msgstr "Debe"
 
 msgctxt "report:account.move.line.move_line_list_spreadsheet:"
-msgid "Description"
-msgstr "Descripción"
-
-msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Maturity Date"
 msgstr "Fecha vencimiento"
 
 msgctxt "report:account.move.line.move_line_list_spreadsheet:"
-msgid "Move"
-msgstr "Asiento"
+msgid "Move Description"
+msgstr "Descripción asiento"
 
 msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Move Lines"
 msgstr "Cuenta corriente"
 
 msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "Page"
+msgstr "Página"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
 msgid "Reconciliation"
 msgstr "Conciliación"
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "for each=\"line in records\""
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "format_date(line.date, user.language) or ''"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "format_date(line.maturity_date, user.language) or ''"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "if test=\"line.maturity_date\""
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.balance"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.credit"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.debit"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.move.description"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.origin_text"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "line.reconciliation.rec_name if line.reconciliation else ''"
+msgstr ""
+
+msgctxt "report:account.move.line.move_line_list_spreadsheet:"
+msgid "records[0].party.name"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "$"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "("
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid ")"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid ","
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "/"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "/for"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "00/00/0000"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "00:00:00"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "???"
+msgstr ""
 
 msgctxt "report:party.balance.account.report:"
 msgid "Balance"
@@ -239,12 +375,40 @@ msgid "Name"
 msgstr "Nombre"
 
 msgctxt "report:party.balance.account.report:"
+msgid "Page"
+msgstr "Página"
+
+msgctxt "report:party.balance.account.report:"
 msgid "Party Balance Account"
 msgstr "Saldos de terceros"
 
 msgctxt "report:party.balance.account.report:"
 msgid "Tax identifier"
-msgstr "Identificador fiscal"
+msgstr "CUIT / DNI"
+
+msgctxt "report:party.balance.account.report:"
+msgid "for each=\"party in records\""
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "party.balance"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "party.code if party.code else ''"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "party.name"
+msgstr ""
+
+msgctxt "report:party.balance.account.report:"
+msgid "party.tax_identifier.code if party.tax_identifier else ''"
+msgstr ""
+
+msgctxt "report:party.balance.line.report:"
+msgid "/"
+msgstr ""
 
 msgctxt "report:party.balance.line.report:"
 msgid "Balance"
@@ -279,6 +443,46 @@ msgid "Origin"
 msgstr "Origen"
 
 msgctxt "report:party.balance.line.spreadsheet:"
+msgid "$"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "("
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid ")"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid ","
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "/"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "/for"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "/if"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "00/00/0000"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "00:00:00"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "???"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
 msgid "Balance"
 msgstr "Saldo"
 
@@ -310,18 +514,46 @@ msgctxt "report:party.balance.line.spreadsheet:"
 msgid "Origin"
 msgstr "Origen"
 
-msgctxt "view:account.move.line:"
-msgid "Credit"
-msgstr "Haber"
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "Page"
+msgstr "Página"
 
-msgctxt "view:account.move.line:"
-msgid "Debit"
-msgstr "Debe"
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "for each=\"line in records\""
+msgstr ""
 
-msgctxt "view:party.balance.line:"
-msgid "Credit"
-msgstr "Haber"
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "format_date(line.date, user.language) or ''"
+msgstr ""
 
-msgctxt "view:party.balance.line:"
-msgid "Debit"
-msgstr "Debe"
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "format_date(line.maturity_date, user.language) or ''"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "if test=\"line.maturity_date\""
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "line.balance"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "line.credit"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "line.debit"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "line.move.description"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "line.origin_text"
+msgstr ""
+
+msgctxt "report:party.balance.line.spreadsheet:"
+msgid "records[0].party.name"
+msgstr ""
