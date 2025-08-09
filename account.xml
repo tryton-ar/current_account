@@ -8,14 +8,13 @@
             <field name="name">Statement of Account</field>
             <field name="wiz_name">account.move.line.balance</field>
         </record>
-
         <record model="ir.action.keyword" id="wiz_statement_of_account_keyword">
             <field name="keyword">form_relate</field>
             <field name="model">party.party,-1</field>
             <field name="action" ref="wiz_statement_of_account"/>
         </record>
 
-        <!-- Statement of Account -->
+<!-- Statement of Account -->
 
         <record model="ir.ui.view" id="move_statement_of_account_view_list">
             <field name="model">account.move.line</field>
@@ -40,31 +39,29 @@
             <field name="group" ref="account.group_account"/>
         </record>
 
-        <!-- Statement of Account Report -->
+<!-- Statement of Account Report -->
 
         <record model="ir.action.report" id="report_statement_of_account">
             <field name="name">Statement of Account</field>
             <field name="model">account.move.line</field>
             <field name="report_name">account.move.line.move_line_list</field>
-            <field name="report">current_account/move_line_list.fodt</field>
+            <field name="report">current_account/report/move_line_list.fodt</field>
         </record>
-
         <record model="ir.action.keyword" id="report_statement_of_account_keyword">
             <field name="keyword">form_print</field>
             <field name="model">account.move.line,-1</field>
             <field name="action" ref="report_statement_of_account"/>
         </record>
 
-<!-- Statement of Account SpreadSheet -->
+<!-- Statement of Account Spreadsheet -->
 
         <record model="ir.action.report" id="report_statement_of_account_spreadsheet">
             <field name="name">Statement of Account</field>
             <field name="model">account.move.line</field>
             <field name="report_name">account.move.line.move_line_list_spreadsheet</field>
-            <field name="report">current_account/move_line_list.fods</field>
+            <field name="report">current_account/report/move_line_list.fods</field>
             <field name="extension">xls</field>
         </record>
-
         <record model="ir.action.keyword" id="report_statement_of_account_spreadsheet_keyword">
             <field name="keyword">form_print</field>
             <field name="model">account.move.line,-1</field>
@@ -78,7 +75,6 @@
             <field name="type">form</field>
             <field name="name">party_balance_account_context_form</field>
         </record>
-
         <record model="ir.ui.view" id="party_balance_account_view_list">
             <field name="model">party.balance.account</field>
             <field name="type">tree</field>
@@ -95,9 +91,15 @@
             <field name="view" ref="party_balance_account_view_list"/>
             <field name="act_window" ref="act_party_balance_account_form"/>
         </record>
-        <menuitem name="Party Balance Account" parent="party.menu_party_form"
-            action="act_party_balance_account_form" id="menu_party_balance_account"
-            sequence="100"/>
+        <menuitem action="act_party_balance_account_form"
+            id="menu_party_balance_account"
+            parent="party.menu_party_form" sequence="100"/>
+
+        <record model="ir.action-res.group"
+            id="act_party_balance_account_form-group_account">
+            <field name="action" ref="act_party_balance_account_form"/>
+            <field name="group" ref="account.group_account"/>
+        </record>
 
 <!-- Balance Line -->
 
@@ -145,10 +147,9 @@
             <field name="name">Party Balance</field>
             <field name="model">party.balance.account</field>
             <field name="report_name">party.balance.account.report</field>
-            <field name="report">current_account/party_balance_account.fods</field>
+            <field name="report">current_account/report/party_balance_account.fods</field>
             <field name="extension">xls</field>
         </record>
-
         <record model="ir.action.keyword" id="report_party_balance_account_keyword">
             <field name="keyword">form_print</field>
             <field name="model">party.balance.account,-1</field>
@@ -161,25 +162,23 @@
             <field name="name">Party Balance Line</field>
             <field name="model">party.balance.line</field>
             <field name="report_name">party.balance.line.report</field>
-            <field name="report">current_account/party_balance_line.fodt</field>
+            <field name="report">current_account/report/party_balance_line.fodt</field>
         </record>
-
         <record model="ir.action.keyword" id="report_balance_line_keyword">
             <field name="keyword">form_print</field>
             <field name="model">party.balance.line,-1</field>
             <field name="action" ref="party_balance_line_report"/>
         </record>
 
-<!-- Party Balance Line Report SpreadSheet -->
+<!-- Party Balance Line Report Spreadsheet -->
 
         <record model="ir.action.report" id="party_balance_line_spreadsheet">
-            <field name="name">Party Balance Line SpreadSheet</field>
+            <field name="name">Party Balance Line Spreadsheet</field>
             <field name="model">party.balance.line</field>
             <field name="report_name">party.balance.line.spreadsheet</field>
-            <field name="report">current_account/party_balance_line.fods</field>
+            <field name="report">current_account/report/party_balance_line.fods</field>
             <field name="extension">xls</field>
         </record>
-
         <record model="ir.action.keyword" id="spreadsheet_balance_line_keyword">
             <field name="keyword">form_print</field>
             <field name="model">party.balance.line,-1</field>

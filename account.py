@@ -9,11 +9,11 @@ from sql.conditionals import Coalesce
 
 from trytond.model import fields, ModelSQL, ModelView
 from trytond.wizard import Wizard, StateAction
+from trytond.report import Report
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import PYSONEncoder, Eval, If
 from trytond.transaction import Transaction
 from trytond.tools import reduce_ids, grouped_slice
-from trytond.report import Report
 from trytond.modules.company import CompanyReport
 
 
@@ -735,7 +735,7 @@ class StatementOfAccountReport(CompanyReport):
     __name__ = 'account.move.line.move_line_list'
 
 
-class StatementOfAccountSpreadSheet(CompanyReport):
+class StatementOfAccountSpreadsheet(CompanyReport):
     'Statement of Account'
     __name__ = 'account.move.line.move_line_list_spreadsheet'
 
@@ -750,6 +750,6 @@ class PartyBalanceLineReport(CompanyReport):
     __name__ = 'party.balance.line.report'
 
 
-class PartyBalanceLineSpreadSheet(CompanyReport):
+class PartyBalanceLineSpreadsheet(CompanyReport):
     'Party Balance Line Spreadsheet'
     __name__ = 'party.balance.line.spreadsheet'

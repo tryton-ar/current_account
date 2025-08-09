@@ -3,7 +3,6 @@
 # the full copyright notices and license terms.
 
 from trytond.pool import Pool
-
 from . import account
 
 __all__ = ['register']
@@ -21,8 +20,8 @@ def register():
         module='current_account', type_='wizard')
     Pool.register(
         account.StatementOfAccountReport,
-        account.StatementOfAccountSpreadSheet,
+        account.StatementOfAccountSpreadsheet,
         account.PartyBalanceAccountReport,
         account.PartyBalanceLineReport,
-        account.PartyBalanceLineSpreadSheet,
+        account.PartyBalanceLineSpreadsheet,
         module='current_account', type_='report')
